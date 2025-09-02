@@ -1,11 +1,23 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Notifications from "expo-notifications";
 import { useEffect, useState } from "react";
 import {
+  Alert,
   FlatList,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
+
+// 通知が鳴ったときの動作を設定
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
 
 const getDaysInMonth = (year, month) => {
   return new Date(year, month + 1, 0).getDate();
@@ -29,14 +41,29 @@ const CalendarScreen = () => {
   const [schedules, setSchedules] = useState({});
 
   useEffect(() => {
-    const storedSets = localStorage.getItem("alarmSets");
-    if (storedSets) {
-      setAlarms(JSON.parse(storedSets));
-    }
-    const storedCalendar = localStorage.getItem("calendarSchedules");
-    if (storedCalendar) {
-      setSchedules(JSON.parse(storedCalendar));
-    }
+    // 通知の権限をリクエスト
+    const requestPermissions = async () => {
+      const { status } = await Notifications.requestPermissionsAsync();
+      if (status !== "granted") {
+        Alert.alert(
+          "通知の許可が必要です",
+          "設定画面から通知を有効にしてください。"
+        );
+      }
+    };
+    requestPermissions();
+
+    const loadData = async () => {
+      const storedSets = await AsyncStorage.getItem("alarmSets");
+      if (storedSets) {
+        setAlarms(JSON.parse(storedSets));
+      }
+      const storedCalendar = await AsyncStorage.getItem("calendarSchedules");
+      if (storedCalendar) {
+        setSchedules(JSON.parse(storedCalendar));
+      }
+    };
+    loadData();
   }, []);
 
   const handleDayPress = (day) => {
@@ -71,12 +98,10 @@ const CalendarScreen = () => {
     const firstDay = getFirstDayOfMonth(year, month);
     const calendarDays = [];
 
-    // Add empty placeholders for days before the 1st
     for (let i = 0; i < firstDay; i++) {
       calendarDays.push({ id: `empty-${i}`, day: "" });
     }
 
-    // Add days of the month
     for (let i = 1; i <= daysInMonth; i++) {
       calendarDays.push({ id: `day-${i}`, day: i });
     }
@@ -132,19 +157,61 @@ const CalendarScreen = () => {
     );
   };
 
-  const handleAssignSet = (set) => {
+  const handleAssignSet = async (set) => {
     const newSchedules = { ...schedules, [selectedDate]: set };
     setSchedules(newSchedules);
-    localStorage.setItem("calendarSchedules", JSON.stringify(newSchedules));
+    await AsyncStorage.setItem(
+      "calendarSchedules",
+      JSON.stringify(newSchedules)
+    );
     setSelectedSet(set);
+
+    if (set.alarms && set.alarms.length > 0) {
+      scheduleAlarms(set.alarms, set.name);
+    }
   };
 
-  const handleUnassignSet = () => {
+  const handleUnassignSet = async () => {
     const newSchedules = { ...schedules };
     delete newSchedules[selectedDate];
     setSchedules(newSchedules);
-    localStorage.setItem("calendarSchedules", JSON.stringify(newSchedules));
+    await AsyncStorage.setItem(
+      "calendarSchedules",
+      JSON.stringify(newSchedules)
+    );
     setSelectedSet(null);
+  };
+
+  const scheduleAlarms = async (alarmsToSchedule, assignedSetName) => {
+    await Notifications.cancelAllScheduledNotificationsAsync();
+
+    const formattedDate = new Date(selectedDate);
+
+    for (const alarm of alarmsToSchedule) {
+      const [hour, minute] = alarm.time.split(":").map(Number);
+
+      const trigger = new Date(
+        formattedDate.getFullYear(),
+        formattedDate.getMonth(),
+        formattedDate.getDate(),
+        hour,
+        minute,
+        0
+      );
+
+      // 通知のスケジュール
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title: "Shift Alarm",
+          body: `It's time for your ${assignedSetName} shift!`,
+          sound: true,
+          vibration: [0, 250, 250, 250],
+        },
+        trigger: {
+          date: trigger,
+        },
+      });
+    }
   };
 
   return (
