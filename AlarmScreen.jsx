@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Picker } from "@react-native-picker/picker";
 import { useEffect, useState } from "react";
 import {
@@ -27,19 +28,36 @@ const AlarmScreen = () => {
     i.toString().padStart(2, "0")
   );
 
+  // AsyncStorageからデータをロード
   useEffect(() => {
-    const storedSets = localStorage.getItem("alarmSets");
-    if (storedSets) {
-      setSets(JSON.parse(storedSets));
-    }
+    const loadSets = async () => {
+      try {
+        const storedSets = await AsyncStorage.getItem("alarmSets");
+        if (storedSets) {
+          setSets(JSON.parse(storedSets));
+        }
+      } catch (e) {
+        console.error("Failed to load sets from AsyncStorage", e);
+      }
+    };
+
+    loadSets();
   }, []);
 
+  // setsが変更されるたびにデータを保存
   useEffect(() => {
-    localStorage.setItem("alarmSets", JSON.stringify(sets));
+    const saveSets = async () => {
+      try {
+        await AsyncStorage.setItem("alarmSets", JSON.stringify(sets));
+      } catch (e) {
+        console.error("Failed to save sets to AsyncStorage", e);
+      }
+    };
+
+    saveSets();
   }, [sets]);
 
   const handleAddAlarm = () => {
-    // タイムインプットが不要になったため、条件を修正
     if (!selectedSet) {
       // alert("Please select a set.");
       return;
@@ -47,7 +65,6 @@ const AlarmScreen = () => {
 
     const newAlarm = {
       id: Date.now(),
-      // Pickerの値を結合してタイムスタンプを作成
       time: `${selectedHour}:${selectedMinute}`,
     };
 
@@ -63,10 +80,6 @@ const AlarmScreen = () => {
           : set
       )
     );
-
-    // アラーム追加後にPickerの値をリセットしたい場合は以下を追加
-    // setSelectedHour("08");
-    // setSelectedMinute("00");
   };
 
   const handleDeleteAlarm = (alarmId) => {
