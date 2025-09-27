@@ -273,7 +273,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#2c3e50",
     alignItems: "center",
     justifyContent: "flex-start",
-    paddingTop: 50,
+    paddingTop: 80,
     paddingHorizontal: 10,
   },
   title: {
