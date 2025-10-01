@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   FlatList,
   StyleSheet,
@@ -10,11 +10,19 @@ import { AlarmSet, Alarm } from "../AlarmScreen";
 import CustomPicker from "./CustomPicker";
 
 type AlarmDetailsProps = {
+  sets: AlarmSet[];
   selectedSet: AlarmSet;
   updateSet: (updatedSet: AlarmSet) => void;
+  onSelectSet: (set: AlarmSet) => void;
 };
 
-const AlarmDetails = ({ selectedSet, updateSet }: AlarmDetailsProps) => {
+const AlarmDetails = ({
+  sets,
+  selectedSet,
+  updateSet,
+  onSelectSet,
+}: AlarmDetailsProps) => {
+  // アラーム追加ボタン押下処理
   const handleAddAlarm = (value: string) => {
     if (!value) return;
 
@@ -36,10 +44,18 @@ const AlarmDetails = ({ selectedSet, updateSet }: AlarmDetailsProps) => {
     updateSet({ ...selectedSet, alarms: updatedAlarms });
   };
 
+  useEffect(() => {
+    onSelectSet({ ...selectedSet });
+  }, [sets]);
+
   return (
     <>
       <Text style={styles.selectedSetTitle}>Alarms for {selectedSet.name}</Text>
+
+      {/* アラーム追加 */}
       <CustomPicker handleAddAlarm={handleAddAlarm} />
+
+      {/* アラーム一覧 */}
       <FlatList
         data={selectedSet.alarms}
         keyExtractor={(item) => item.id.toString()}

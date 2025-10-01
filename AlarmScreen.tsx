@@ -24,6 +24,8 @@ export type AlarmSet = {
 const AlarmScreen = () => {
   const [currentSetName, setCurrentSetName] = useState<string>("");
   const [sets, setSets] = useState<AlarmSet[]>([]);
+
+  // 選択中のシフト
   const [selectedSet, setSelectedSet] = useState<AlarmSet | null>(null);
 
   // AsyncStorageからデータをロード
@@ -53,6 +55,7 @@ const AlarmScreen = () => {
     saveSets();
   }, [sets]);
 
+  // シフト追加ボタン押下処理
   const handleAddSet = () => {
     if (!currentSetName) return;
 
@@ -69,11 +72,13 @@ const AlarmScreen = () => {
     setSets((prevSets) =>
       prevSets.map((set) => (set.id === updatedSet.id ? updatedSet : set))
     );
+    setSelectedSet({ ...updatedSet });
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Shift Alarm</Text>
+      {/* シフト追加コンポーネント */}
       <View style={styles.formContainer}>
         <TextInput
           style={styles.input}
@@ -86,13 +91,22 @@ const AlarmScreen = () => {
           <Text style={styles.warmButtonText}>Create Set</Text>
         </TouchableOpacity>
       </View>
+
+      {/* シフト選択コンポーネント */}
       <AlarmSetList
         sets={sets}
         selectedSet={selectedSet}
         onSelectSet={setSelectedSet}
       />
+
+      {/* アラーム追加コンポーネント */}
       {selectedSet && (
-        <AlarmDetails selectedSet={selectedSet} updateSet={updateSet} />
+        <AlarmDetails
+          sets={sets}
+          selectedSet={selectedSet}
+          updateSet={updateSet}
+          onSelectSet={setSelectedSet}
+        />
       )}
     </View>
   );
