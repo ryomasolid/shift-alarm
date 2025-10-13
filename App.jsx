@@ -2,6 +2,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import AlarmScreen from "./AlarmScreen";
 import CalendarScreen from "./CalendarScreen";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 const Tab = createBottomTabNavigator();
 
@@ -11,17 +12,37 @@ const App = () => {
       <Tab.Navigator
         initialRouteName="Alarms"
         screenOptions={{
-          tabBarActiveTintColor: "#3498db",
-          tabBarInactiveTintColor: "gray",
+          // アクティブなタブの色をオレンジに
+          tabBarActiveTintColor: "#ff7f50", // Coral
+          // 非アクティブなタブの色を少し暗めのオレンジに
+          tabBarInactiveTintColor: "#a52a2a", // Brown
           tabBarStyle: {
-            backgroundColor: "#2c3e50",
-            borderTopColor: "#34495e",
+            // タブバーの背景色を暖色系の暗い色に
+            backgroundColor: "#2e2e2e",
+            // タブバーの上の境界線を暖色系の色に
+            borderTopColor: "#b22222", // Firebrick
           },
-          headerShown: false, // Hide the header to provide more screen space
+          headerShown: false,
         }}
       >
-        <Tab.Screen name="Alarms" component={AlarmScreen} />
-        <Tab.Screen name="Calendar" component={CalendarScreen} />
+        <Tab.Screen
+          name="Alarms"
+          component={AlarmScreen}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <Icon name="bell" color={color} size={size} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Calendar"
+          component={CalendarScreen}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <Icon name="calendar" color={color} size={size} />
+            ),
+          }}
+        />
       </Tab.Navigator>
     </NavigationContainer>
   );

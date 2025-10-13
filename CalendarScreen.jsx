@@ -270,16 +270,16 @@ const CalendarScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#2c3e50",
+    backgroundColor: "#311c14",
     alignItems: "center",
     justifyContent: "flex-start",
-    paddingTop: 50,
+    paddingTop: 80,
     paddingHorizontal: 10,
   },
   title: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#ecf0f1",
+    color: "#ffffff",
     marginBottom: 20,
   },
   calendarContainer: {
@@ -287,7 +287,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     padding: 10,
     borderRadius: 10,
-    backgroundColor: "#34495e",
+    backgroundColor: "#4c2b1e",
   },
   monthHeader: {
     flexDirection: "row",
@@ -296,11 +296,11 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   navButton: {
-    color: "#ecf0f1",
+    color: "#f39174",
     fontSize: 24,
   },
   monthText: {
-    color: "#ecf0f1",
+    color: "#f3f3f3",
     fontSize: 20,
     fontWeight: "bold",
   },
@@ -310,7 +310,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   weekdayText: {
-    color: "#bdc3c7",
+    color: "#e6e6e6",
     fontWeight: "bold",
   },
   dayContainer: {
@@ -323,15 +323,15 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   selectedDay: {
-    borderColor: "#3498db",
-    backgroundColor: "#1f2937",
+    borderColor: "#f39174",
+    backgroundColor: "#7a493a",
   },
   dayText: {
-    color: "#ecf0f1",
+    color: "#ffffff",
     fontSize: 16,
   },
   assignedSetName: {
-    color: "#2ecc71",
+    color: "#ff8c64",
     fontSize: 10,
     marginTop: 2,
     textAlign: "center",
@@ -341,34 +341,34 @@ const styles = StyleSheet.create({
     marginTop: 20,
     padding: 10,
     borderRadius: 10,
-    backgroundColor: "#34495e",
+    backgroundColor: "#4c2b1e",
   },
   selectedDateText: {
-    color: "#3498db",
+    color: "#ff8c64",
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 10,
   },
   instructionText: {
-    color: "#bdc3c7",
+    color: "#e6e6e6",
     marginBottom: 10,
   },
   setButton: {
-    backgroundColor: "#3498db",
+    backgroundColor: "#ff6347",
     paddingVertical: 10,
     paddingHorizontal: 15,
     borderRadius: 5,
     marginRight: 10,
   },
   selectedSetButton: {
-    backgroundColor: "#2980b9",
+    backgroundColor: "#ff4735",
   },
   setButtonText: {
-    color: "#ecf0f1",
+    color: "#ffffff",
     fontWeight: "bold",
   },
   emptyText: {
-    color: "#bdc3c7",
+    color: "#e6e6e6",
     fontStyle: "italic",
     textAlign: "center",
     marginTop: 20,
@@ -379,11 +379,11 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   assignedSetInfoText: {
-    color: "#ecf0f1",
+    color: "#ffffff",
     fontSize: 16,
   },
   unassignButton: {
-    color: "#e74c3c",
+    color: "#f08080",
     fontWeight: "bold",
   },
 });
